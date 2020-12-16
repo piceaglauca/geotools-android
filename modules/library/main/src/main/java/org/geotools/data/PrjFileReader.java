@@ -80,8 +80,8 @@ public class PrjFileReader implements Closeable {
 
             // ok, everything is ready...
             decoder.decode(buffer, charBuffer, true);
-            buffer.limit(buffer.capacity());
-            charBuffer.flip();
+            ((Buffer) buffer).limit(buffer.capacity());
+            ((Buffer) charBuffer).flip();
             crs =
                     ReferencingFactoryFinder.getCRSFactory(hints)
                             .createFromWKT(charBuffer.toString());
@@ -108,7 +108,7 @@ public class PrjFileReader implements Closeable {
             r = channel.read(buffer);
         }
         if (r == -1) {
-            buffer.limit(buffer.position());
+            ((Buffer) buffer).limit(((Buffer) buffer).position());
         }
         return r;
     }
@@ -131,7 +131,7 @@ public class PrjFileReader implements Closeable {
             buffer = ByteBuffer.allocateDirect(size);
             // fill it and reset
             fill(buffer, channel);
-            buffer.flip();
+            ((Buffer) buffer).flip();
         }
 
         // The entire file is in little endian

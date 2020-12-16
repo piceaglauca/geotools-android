@@ -123,7 +123,7 @@ public class PolygonHandler implements ShapeHandler {
             return createNull();
         }
         // bounds
-        ((Buffer) buffer).position(buffer.position() + 4 * 8);
+        ((Buffer) buffer).position(((Buffer) buffer).position() + 4 * 8);
 
         int[] partOffsets;
 
@@ -296,7 +296,7 @@ public class PolygonHandler implements ShapeHandler {
         }
         if (!flatFeature) {
             if (shapeType == ShapeType.POLYGONZ) { // Handle Z
-                dbuffer.position(dbuffer.position() + 2);
+                ((Buffer) dbuffer).position(((Buffer) dbuffer).position() + 2);
                 dbuffer.get(ordinates, 0, numPoints);
 
                 for (int t = 0; t < numPoints; t++) {
@@ -307,7 +307,7 @@ public class PolygonHandler implements ShapeHandler {
             boolean isArcZWithM = dbuffer.hasRemaining() && shapeType == ShapeType.POLYGONZ;
             if (isArcZWithM || shapeType == ShapeType.POLYGONM) {
                 // Handle M
-                dbuffer.position(dbuffer.position() + 2);
+                ((Buffer) dbuffer).position(((Buffer) dbuffer).position() + 2);
                 dbuffer.get(ordinates, 0, numPoints);
 
                 for (int t = 0; t < numPoints; t++) {

@@ -125,7 +125,7 @@ public class IndexFile implements FileReader {
             while (buffer.remaining() > 0) {
                 channel.read(buffer);
             }
-            buffer.flip();
+            ((Buffer) buffer).flip();
             header = new ShapefileHeader();
             header.read(buffer, true);
         } finally {
@@ -142,7 +142,7 @@ public class IndexFile implements FileReader {
             while (buffer.remaining() > 0) {
                 channel.read(buffer);
             }
-            buffer.flip();
+            ((Buffer) buffer).flip();
             int records = remaining / 4;
             content = new int[records];
             IntBuffer ints = buffer.asIntBuffer();
@@ -157,7 +157,7 @@ public class IndexFile implements FileReader {
         int pos = 100 + index * 8;
         if (!this.useMemoryMappedBuffer) {
             if (pos - this.channelOffset < 0
-                    || this.channelOffset + buf.limit() <= pos
+                    || this.channelOffset + ((Buffer) buf).limit() <= pos
                     || this.lastIndex == -1) {
                 LOGGER.finest("Filling buffer...");
                 this.channelOffset = pos;

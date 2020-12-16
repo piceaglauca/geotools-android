@@ -105,7 +105,7 @@ public class MultiPointHandler implements ShapeHandler {
         }
 
         // read bounding box (not needed)
-        ((Buffer) buffer).position(buffer.position() + 4 * 8);
+        ((Buffer) buffer).position(((Buffer) buffer).position() + 4 * 8);
 
         int numpoints = buffer.getInt();
         int dimensions = shapeType == ShapeType.MULTIPOINTZ && !flatGeometry ? 3 : 2;
@@ -133,7 +133,7 @@ public class MultiPointHandler implements ShapeHandler {
         }
 
         if (shapeType == ShapeType.MULTIPOINTZ && !flatGeometry) {
-            ((Buffer) dbuffer).position(dbuffer.position() + 2);
+            ((Buffer) dbuffer).position(((Buffer) dbuffer).position() + 2);
 
             dbuffer.get(ordinates, 0, numpoints);
             for (int t = 0; t < numpoints; t++) {
@@ -143,7 +143,7 @@ public class MultiPointHandler implements ShapeHandler {
 
         boolean isArcZWithM = shapeType == ShapeType.MULTIPOINTZ && dbuffer.hasRemaining();
         if ((isArcZWithM || shapeType == ShapeType.MULTIPOINTM) && !flatGeometry) {
-            ((Buffer) dbuffer).position(dbuffer.position() + 2);
+            ((Buffer) dbuffer).position(((Buffer) dbuffer).position() + 2);
 
             dbuffer.get(ordinates, 0, numpoints);
             for (int t = 0; t < numpoints; t++) {

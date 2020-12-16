@@ -197,7 +197,7 @@ public class DbaseFileReader implements FileReader, Closeable {
             } else {
                 buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, Integer.MAX_VALUE);
             }
-            buffer.position((int) fc.position());
+            ((Buffer) buffer).position((int) fc.position());
             header.readHeader(buffer);
 
             this.currentOffset = 0;
@@ -247,7 +247,7 @@ public class DbaseFileReader implements FileReader, Closeable {
             r = channel.read(buffer);
         }
         if (r == -1) {
-            buffer.limit(buffer.position());
+            ((Buffer) buffer).limit(((Buffer) buffer).position());
         }
         return r;
     }
@@ -259,7 +259,7 @@ public class DbaseFileReader implements FileReader, Closeable {
             if (buffer.remaining() < header.getRecordLength()) {
                 // ops, we're dealing with a DBF whose size is > 2GB (and < 4 normally?)
                 FileChannel fc = (FileChannel) channel;
-                int position = buffer.position();
+                int position = ((Buffer) buffer).position();
                 if (fc.size() > position + Integer.MAX_VALUE) {
                     currentOffset = position;
                 } else {
@@ -270,13 +270,16 @@ public class DbaseFileReader implements FileReader, Closeable {
 
                 buffer =
                         ((FileChannel) channel)
-                                .map(MapMode.READ_ONLY, buffer.position(), Integer.MAX_VALUE);
+                                .map(
+                                        MapMode.READ_ONLY,
+                                        ((Buffer) buffer).position(),
+                                        Integer.MAX_VALUE);
             }
         } else if (buffer.remaining() < header.getRecordLength()) {
-            this.currentOffset += buffer.position();
+            this.currentOffset += ((Buffer) buffer).position();
             buffer.compact();
             fill(buffer, channel);
-            buffer.position(0);
+            ((Buffer) buffer).position(0);
         }
     }
 
@@ -349,7 +352,8 @@ public class DbaseFileReader implements FileReader, Closeable {
             final char tempDeleted = (char) buffer.get();
 
             // skip the next bytes
-            buffer.position(buffer.position() + header.getRecordLength() - 1); // the
+            ((Buffer) buffer)
+                    .position(((Buffer) buffer).position() + header.getRecordLength() - 1); // the
             // 1 is
             // for
             // the
@@ -410,9 +414,9 @@ public class DbaseFileReader implements FileReader, Closeable {
     /** Transfer, by bytes, the next record to the writer. */
     public void transferTo(final DbaseFileWriter writer) throws IOException {
         bufferCheck();
-        buffer.limit(buffer.position() + header.getRecordLength());
+        ((Buffer) buffer).limit(((Buffer) buffer).position() + header.getRecordLength());
         writer.channel.write(buffer);
-        buffer.limit(buffer.capacity());
+        ((Buffer) buffer).limit(buffer.capacity());
 
         cnt++;
     }
@@ -431,7 +435,7 @@ public class DbaseFileReader implements FileReader, Closeable {
             final char deleted = (char) buffer.get();
             row.deleted = deleted == '*';
 
-            ((Buffer) buffer).limit(buffer.position() + header.getRecordLength() - 1);
+            ((Buffer) buffer).limit(((Buffer) buffer).position() + header.getRecordLength() - 1);
             buffer.get(bytes); // SK: There is a side-effect here!!!
             ((Buffer) buffer).limit(buffer.capacity());
 

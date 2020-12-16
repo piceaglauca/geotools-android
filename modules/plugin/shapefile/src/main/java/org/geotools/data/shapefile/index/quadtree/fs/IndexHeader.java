@@ -61,7 +61,7 @@ public class IndexHeader {
                             + "is deprecated; It is strongly recommended "
                             + "to regenerate it in new format.");
 
-            buf.position(0);
+            ((Buffer) buf).position(0);
             tmp = buf.array();
 
             boolean lsb;
@@ -82,7 +82,7 @@ public class IndexHeader {
         Charset charSet = Charset.forName("US-ASCII");
 
         ByteBuffer tmp = charSet.encode(SIGNATURE);
-        tmp.position(0);
+        ((Buffer) tmp).position(0);
         buf.put(tmp);
         buf.put(this.byteOrder);
         buf.put(VERSION);

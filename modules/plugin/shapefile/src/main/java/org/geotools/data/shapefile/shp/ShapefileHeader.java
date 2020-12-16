@@ -80,7 +80,7 @@ public class ShapefileHeader {
         checkMagic(strict);
 
         // skip 5 ints...
-        ((Buffer) file).position(file.position() + 20);
+        ((Buffer) file).position(((Buffer) file).position() + 20);
 
         fileLength = file.getInt();
 

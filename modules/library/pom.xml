@@ -48,12 +48,12 @@
     <module>sample-data</module>
     <module>metadata</module>
     <module>referencing</module>
-    <module>coverage</module>
+    <!--<module>coverage</module>-->
     <module>main</module>
-    <module>xml</module>
-    <module>cql</module>
-    <module>render</module>
-    <module>jdbc</module>
+    <!--<module>xml</module>-->
+    <!--<module>cql</module>-->
+    <!--<module>render</module>-->
+    <!--<module>jdbc</module>-->
   </modules>
 
 </project>

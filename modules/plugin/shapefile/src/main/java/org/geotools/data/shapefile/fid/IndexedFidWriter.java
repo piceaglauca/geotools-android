@@ -20,6 +20,7 @@ import static org.geotools.data.shapefile.files.ShpFileType.FIX;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import org.geotools.data.shapefile.files.FileWriter;
@@ -93,7 +94,7 @@ public class IndexedFidWriter implements FileWriter {
         streamLogger.open();
         allocateBuffers();
         removes = reader.getRemoves();
-        writeBuffer.position(HEADER_SIZE);
+        ((Buffer) writeBuffer).position(HEADER_SIZE);
         closed = false;
         position = 0;
         current = -1;
@@ -110,7 +111,7 @@ public class IndexedFidWriter implements FileWriter {
 
     /** Drain internal buffers into underlying channels. */
     private void drain() throws IOException {
-        writeBuffer.flip();
+        ((Buffer) writeBuffer).flip();
 
         int written = 0;
 
@@ -118,7 +119,7 @@ public class IndexedFidWriter implements FileWriter {
 
         position += written;
 
-        writeBuffer.flip().limit(writeBuffer.capacity());
+        ((Buffer) writeBuffer).flip().limit(writeBuffer.capacity());
     }
 
     private void writeHeader() throws IOException {
@@ -129,7 +130,7 @@ public class IndexedFidWriter implements FileWriter {
 
             buffer.putLong(recordIndex);
             buffer.putInt(removes);
-            buffer.flip();
+            ((Buffer) buffer).flip();
             channel.write(buffer, 0);
         } finally {
             NIOUtilities.clean(buffer, false);

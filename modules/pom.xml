@@ -57,10 +57,10 @@
   <!-- =========================================================== -->
   <modules>
     <module>library</module>
-    <module>ogc</module>    
+    <!--<module>ogc</module>    -->
     <module>plugin</module>
-    <module>extension</module>
-    <module>unsupported</module>
+    <!--<module>extension</module>-->
+    <!--<module>unsupported</module>-->
   </modules>
 
 

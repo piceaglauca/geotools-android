@@ -100,11 +100,11 @@ public class ShapefileWriter implements Closeable {
     /** Drain internal buffers into underlying channels. */
     private void drain() throws IOException {
         ((Buffer) shapeBuffer).flip();
-        indexBuffer.flip();
+        ((Buffer) indexBuffer).flip();
         while (shapeBuffer.remaining() > 0) shpChannel.write(shapeBuffer);
         while (indexBuffer.remaining() > 0) shxChannel.write(indexBuffer);
-        shapeBuffer.flip().limit(shapeBuffer.capacity());
-        indexBuffer.flip().limit(indexBuffer.capacity());
+        ((Buffer) shapeBuffer).flip().limit(shapeBuffer.capacity());
+        ((Buffer) indexBuffer).flip().limit(indexBuffer.capacity());
     }
 
     private void writeHeaders(GeometryCollection geometries, ShapeType type) throws IOException {
@@ -191,14 +191,14 @@ public class ShapefileWriter implements Closeable {
      */
     public void writeGeometry(Geometry g) throws IOException {
         if (shapeBuffer == null) throw new IOException("Must write headers first");
-        lp = shapeBuffer.position();
+        lp = ((Buffer) shapeBuffer).position();
         int length;
         if (g == null) length = writeNullGeometry();
         else length = writeNonNullGeometry(g);
 
-        assert (length * 2 == (shapeBuffer.position() - lp) - 8);
+        assert (length * 2 == (((Buffer) shapeBuffer).position() - lp) - 8);
 
-        lp = shapeBuffer.position();
+        lp = ((Buffer) shapeBuffer).position();
 
         // write to the shx
         indexBuffer.putInt(offset);
@@ -206,7 +206,7 @@ public class ShapefileWriter implements Closeable {
         offset += length + 4;
 
         drain();
-        assert (shapeBuffer.position() == 0);
+        assert (((Buffer) shapeBuffer).position() == 0);
     }
 
     private int writeNonNullGeometry(Geometry g) {
@@ -274,7 +274,7 @@ public class ShapefileWriter implements Closeable {
 
         writeHeaders(geometries, type);
 
-        lp = shapeBuffer.position();
+        lp = ((Buffer) shapeBuffer).position();
         for (int i = 0, ii = geometries.getNumGeometries(); i < ii; i++) {
             Geometry g = geometries.getGeometryN(i);
 

@@ -200,7 +200,7 @@ public class FileSystemNode extends Node {
             if (!useMemoryMapping && buffer.remaining() < 32) refillBuffer(32);
 
             buffer.asDoubleBuffer().get(envelope);
-            buffer.position(buffer.position() + 32);
+            ((Buffer) buffer).position(((Buffer) buffer).position() + 32);
             return new Envelope(envelope[0], envelope[2], envelope[1], envelope[3]);
         }
 
@@ -209,17 +209,17 @@ public class FileSystemNode extends Node {
             if (buffer.remaining() < size) refillBuffer(size);
             // read the array using a view
             IntBuffer intView = buffer.asIntBuffer();
-            intView.limit(array.length);
+            ((Buffer) intView).limit(array.length);
             intView.get(array);
             // don't forget to update the original buffer position, since the
             // view is independent
-            buffer.position(buffer.position() + size);
+            ((Buffer) buffer).position(((Buffer) buffer).position() + size);
         }
 
         /** */
         void refillBuffer(int requiredSize) throws IOException {
             // compute the actual position up to we have read something
-            long currentPosition = bufferStart + buffer.position();
+            long currentPosition = bufferStart + ((Buffer) buffer).position();
             // if the buffer is not big enough enlarge it
             if (buffer.capacity() < requiredSize) {
                 int size = buffer.capacity();
@@ -232,9 +232,9 @@ public class FileSystemNode extends Node {
 
         private void readBuffer(long currentPosition) throws IOException {
             channel.position(currentPosition);
-            buffer.clear();
+            ((Buffer) buffer).clear();
             channel.read(buffer);
-            buffer.flip();
+            ((Buffer) buffer).flip();
             bufferStart = currentPosition;
         }
 
@@ -244,8 +244,9 @@ public class FileSystemNode extends Node {
             // buffer position
             // otherwise we have to reload it
             if (useMemoryMapping
-                    || newPosition >= bufferStart && newPosition <= bufferStart + buffer.limit()) {
-                buffer.position((int) (newPosition - bufferStart));
+                    || newPosition >= bufferStart
+                            && newPosition <= bufferStart + ((Buffer) buffer).limit()) {
+                ((Buffer) buffer).position((int) (newPosition - bufferStart));
             } else {
                 readBuffer(newPosition);
             }
@@ -253,7 +254,7 @@ public class FileSystemNode extends Node {
 
         /** Returns the absolute position of the next byte that will be read */
         public long getPosition() {
-            return bufferStart + buffer.position();
+            return bufferStart + ((Buffer) buffer).position();
         }
     }
 }

@@ -482,10 +482,10 @@ public class ShapefileReader implements FileReader {
         }
 
         // write header to shp and shx
-        headerTransfer.position(0);
-        headerTransfer.putInt(recordNum).putInt(rl).position(0);
+        ((Buffer) headerTransfer).position(0);
+        ((Buffer) headerTransfer.putInt(recordNum).putInt(rl)).position(0);
         writer.shpChannel.write(headerTransfer);
-        headerTransfer.putInt(0, writer.offset).position(0);
+        ((Buffer) headerTransfer.putInt(0, writer.offset)).position(0);
         writer.offset += rl + 4;
         writer.shxChannel.write(headerTransfer);
 
@@ -522,7 +522,7 @@ public class ShapefileReader implements FileReader {
             ((Buffer) buffer).position(0);
             ((Buffer) buffer).limit(((Buffer) buffer).capacity());
             fill(buffer, fc);
-            buffer.flip();
+            ((Buffer) buffer).flip();
         }
     }
 
