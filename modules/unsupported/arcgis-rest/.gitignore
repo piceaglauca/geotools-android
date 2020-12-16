@@ -1,8 +1,0 @@
-
-target/
-.idea/
-.settings/
-.project
-*.iml
-.classpath
-test.sh
